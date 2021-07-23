@@ -1,0 +1,66 @@
+version: 2.1
+
+orbs:
+  slack: circleci/slack@3.4.2
+
+jobs:
+  build:
+    docker:
+      - image: talabat/aws-nodejs
+    steps:
+      - checkout
+      - run:
+          name: install node modules
+          command: yarn install
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - ./
+  deploy-dev:
+    docker:
+      - image: talabat/aws-nodejs
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: replaces config
+          command: cp config/config.dev.js config/config.js
+      - run:
+          name: Deployment to dev environment
+          command: ENVIRONMENT_FILE=enviroments/dev.ini yarn deploy
+  deploy-prod:
+    docker:
+      - image: talabat/aws-nodejs
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: replaces config
+          command: cp config/config.prd.js config/config.js
+      - run:
+          name: Deployment to prod environment
+          command: ENVIRONMENT_FILE=enviroments/prd.ini yarn deploy
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build
+      - deploy-dev:
+          context: talabat-qa
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - develop
+      - deploy-prod:
+          context: talabat-prod
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
