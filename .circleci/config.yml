@@ -72,13 +72,13 @@ workflows:
     jobs:
       - build
       - get-qa-context:
-          context: tlb-stg-ops-platform
+          context: moonmin-qa
           filters:
             branches:
               only:
                 - develop
       - get-prod-context:
-          context: tlb-prd-ops-platform
+          context: moonmin-prod
           filters:
             branches:
               only:
