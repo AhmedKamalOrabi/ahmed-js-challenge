@@ -49,7 +49,7 @@ workflows:
     jobs:
       - build
       - deploy-dev:
-          context: talabat-qa
+          context: #qa-context
           requires:
             - build
           filters:
@@ -57,7 +57,7 @@ workflows:
               only:
                 - develop
       - deploy-prod:
-          context: talabat-prod
+          context: #prod-context
           requires:
             - build
           filters:
