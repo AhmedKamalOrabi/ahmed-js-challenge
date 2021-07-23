@@ -15,7 +15,8 @@
     "cypress:start:wait": "start-server-and-test cypress:start:app http://localhost:3000",
     "cypress:open": "npm run cypress:start:wait -- \"cypress open\"",
     "cypress:run": "npm run cypress:start:wait -- \"cypress run\"",
-    "deploy": "bash ./scripts/deploy.sh $ENVIRONMENT_FILE"
+    "deploy": "bash ./scripts/deploy.sh $ENVIRONMENT_FILE",
+    "analize": "node scripts/analize.js"
   },
   "eslintConfig": {
     "extends": [
@@ -82,6 +83,7 @@
     "prettier": "^2.3.2",
     "start-server-and-test": "^1.13.0",
     "typescript": "^4.3.5",
-    "typings": "^2.1.1"
+    "typings": "^2.1.1",
+    "webpack-bundle-analyzer": "^4.4.2"
   }
 }
