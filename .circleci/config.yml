@@ -47,9 +47,8 @@ workflows:
   version: 2
   main:
     jobs:
-      - build
       - deploy-dev:
-          context: #qa-context
+          context: moonmin-qa
           requires:
             - build
           filters:
@@ -57,7 +56,7 @@ workflows:
               only:
                 - develop
       - deploy-prod:
-          context: #prod-context
+          context: moonmin-prod
           requires:
             - build
           filters:
