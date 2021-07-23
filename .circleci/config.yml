@@ -16,6 +16,28 @@ jobs:
           root: ~/project
           paths:
             - ./
+  get-qa-context:
+    docker:
+      - image: talabat/aws-nodejs
+    steps:
+      - run:
+          name: Dump env variables
+          command: env > .envFile
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - ./
+  get-prod-context:
+    docker:
+      - image: talabat/aws-nodejs
+    steps:
+      - run:
+          name: Dump env variables
+          command: env > .envFile
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - ./
   deploy-dev:
     docker:
       - image: talabat/aws-nodejs
@@ -29,6 +51,7 @@ jobs:
       - run:
           name: Deployment to dev environment
           command: ENVIRONMENT_FILE=enviroments/dev.ini yarn deploy
+
   deploy-prod:
     docker:
       - image: talabat/aws-nodejs
@@ -47,10 +70,24 @@ workflows:
   version: 2
   main:
     jobs:
+      - build
+      - get-qa-context:
+          context: tlb-stg-ops-platform
+          filters:
+            branches:
+              only:
+                - develop
+      - get-prod-context:
+          context: tlb-prd-ops-platform
+          filters:
+            branches:
+              only:
+                - master
       - deploy-dev:
           context: moonmin-qa
           requires:
             - build
+            - get-qa-context
           filters:
             branches:
               only:
@@ -59,6 +96,7 @@ workflows:
           context: moonmin-prod
           requires:
             - build
+            - get-prod-context
           filters:
             branches:
               only:
